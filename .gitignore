@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+*.log
+.pytest_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+*.db
+.env.*
+!.env.example
+.vscode/
+.idea/
+build/
+CLAUDE.md

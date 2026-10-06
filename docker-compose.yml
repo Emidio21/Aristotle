@@ -1,0 +1,24 @@
+services:
+  aristotle:
+    build: .
+    image: aristotle:latest
+    container_name: aristotle
+    # Segreti (token Telegram, API key) in .env sul server: mai nell'immagine ne' nel repo.
+    env_file: .env
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # ATTENZIONE: una sola istanza per token. Due bot in polling con lo stesso token
+    # si danno errori di conflitto a vicenda (anche un'istanza locale di sviluppo).
