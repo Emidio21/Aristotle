@@ -1,4 +1,4 @@
-> Aggiornamento: tutti i comandi della tabella sono stati portati (vedi README). Restano da verificare
+> Aggiornamento: tutti i comandi della tabella sono stati portati (vedi [sviluppo.md](sviluppo.md)). Restano da verificare
 > su dati reali /sh /epic /co /mpp /mppsraw (erepublik.com dietro Cloudflare).
 
 # Comandi Socrates -> Aristotle (TODO 3)
