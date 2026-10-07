@@ -115,19 +115,23 @@ def test_paginate_splits_and_footer_only_last():
     assert not any(POWERED_BY in p for p in pages[:-1])
 
 
-MAP_XML = """<?xml version="1.0"?>
-<response><countries>
-<country c_id="10" name="Italy"><mpps><mpp c_id="12" expires="20261103"/><mpp c_id="11" expires="20260901"/></mpps></country>
-<country c_id="12" name="Germany"><mpps> </mpps></country>
-</countries></response>"""
+MAP_XML = json.dumps({"status": "success", "code": 200, "message": {"countries": {"country": [
+    {"%name%": "italy", "%c_id%": "10", "mpps": {"mpp": [
+        {"%c_id%": "12", "%expires%": "20261103"}, {"%c_id%": "11", "%expires%": "20260901"}]}},
+    {"%name%": "germany", "%c_id%": "12", "mpps": " "},
+    {"%name%": "spain", "%c_id%": "13", "mpps": {"mpp": {"%c_id%": "10", "%expires%": "20261105"}}},
+]}}})
 
 
 def test_parse_map_sorted_and_empty():
     m = parse_map(MAP_XML)
     assert [x.partner_id for x in m[10]] == [11, 12]  # ordinati per scadenza
     assert m[12] == []
+    assert [x.partner_id for x in m[13]] == [10]  # un solo MPP: dict invece di lista
     with pytest.raises(ErepApiError):
         parse_map("<broken")
+    with pytest.raises(ErepApiError):
+        parse_map("{}")
 
 
 def test_mpp_format_and_csv():
@@ -138,7 +142,7 @@ def test_mpp_format_and_csv():
     assert "Nessun MPP" in format_mpp("Germany", [], cs)[0]
     csv_text = mpps_csv(m, cs)
     assert csv_text.splitlines()[0] == "Italy;France;01/09/2026"
-    assert len(csv_text.splitlines()) == 2
+    assert len(csv_text.splitlines()) == 3
 
 
 def make_site(handler):
